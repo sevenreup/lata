@@ -41,10 +41,6 @@ fn main() {
 }
 
 fn read_index_html(path: &String) -> String {
-    // check if index.html exists in base path
-    // if not, generate index.html
-    // if exists, read index.html
-    // read all markdown files in the path and subdirectories, and generate html files
     let index_path = format!("{}/index.html", path);
     if !fs::metadata(&index_path).is_ok() {
         return "".to_string();
@@ -55,11 +51,9 @@ fn read_index_html(path: &String) -> String {
     }
 }
 
-// read all markdown files in the path and subdirectories, and generate html files
 fn read_markdown_files(base_path: &String) -> Vec<MarkdownFile> {
     let mut files: Vec<MarkdownFile> = Vec::new();
     let mut dirs: Vec<PathBuf> = Vec::new();
-    // convert base_path to PathBuf
     let base_path = fs::canonicalize(base_path).unwrap();
     dirs.push(base_path.clone());
 
@@ -105,6 +99,21 @@ fn generate_html_files(site: &Site) {
         data.insert("content".to_string(), source);
         let result = handlebars.render("t1", &data).unwrap();
         println!("{}", result);
+
+        let build_path = format!("{}/build/{}", site.base_path, file.relative_path);
+        let build_path = build_path.replace("\\", "/");
+        let build_path = format!("{}/index.html", build_path);
+
+        let mut file_folder = PathBuf::from(&build_path);
+        file_folder.pop();
+
+        if !fs::metadata(&file_folder).is_ok() {
+            fs::create_dir_all(&file_folder).unwrap();
+        }
+
+        let file_path = PathBuf::from(&build_path);
+
+        fs::write(file_path, result).unwrap();
     }
 }
 
