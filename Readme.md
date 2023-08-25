@@ -81,9 +81,11 @@ To build a release build run
 cargo build --release
 ```
 
-## Coming soon
+## TODO
 
 - Add watch mode to build files on change
 - Add landing page
 - Build normal markdown file into page
 - Add custom page support
+- make the html template optional
+- Add sitemap/table of contents
